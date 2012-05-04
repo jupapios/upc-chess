@@ -2,10 +2,10 @@
  * Javascript/Canvas Textured 3D Renderer v0.3
  * Copyright (c) 2008 Jacob Seidelin, cupboy@gmail.com
  * This software is free to use for non-commercial purposes. For anything else, please contact the author.
- * This is a version modified by Stefano Gioffre'.
  */
 
-Canvas3D.Matrix3 = function() {
+Canvas3D.Matrix3 = function() 
+{
 	this.e = [
 		[1.0, 0.0, 0.0],
 		[0.0, 1.0, 0.0],
@@ -13,7 +13,8 @@ Canvas3D.Matrix3 = function() {
 	];
 }
 
-Canvas3D.Matrix3.prototype.multiplyVector = function(v) {
+Canvas3D.Matrix3.prototype.multiplyVector = function(v)
+{
 	var p = new Canvas3D.Vec3;
 	var e0 = this.e[0], e1 = this.e[1], e2 = this.e[2];
 
@@ -25,7 +26,8 @@ Canvas3D.Matrix3.prototype.multiplyVector = function(v) {
 	return p;
 }
 
-Canvas3D.Matrix3.prototype.multiplyMatrix = function(M) {
+Canvas3D.Matrix3.prototype.multiplyMatrix = function(M)
+{
 	var p = new Canvas3D.Matrix3();
 	var e0 = this.e[0], e1 = this.e[1], e2 = this.e[2];
 
@@ -54,7 +56,8 @@ Canvas3D.Matrix3.prototype.multiplyMatrix = function(M) {
 	return p;
 }
 
-Canvas3D.Matrix3.prototype.transpose = function() {
+Canvas3D.Matrix3.prototype.transpose = function()
+{
 	var t = new Canvas3D.Matrix3();
 	t.e[0][0] = this.e[0][0];
 	t.e[0][1] = this.e[1][0];
@@ -68,35 +71,40 @@ Canvas3D.Matrix3.prototype.transpose = function() {
 	return t;
 }
 
-Canvas3D.Matrix3.prototype.loadIdentity = function() {
+Canvas3D.Matrix3.prototype.loadIdentity = function()
+{
 	var e0 = this.e[0], e1 = this.e[1], e2 = this.e[2];
 	e0[0] = 1; e0[1] = 0; e0[2] = 0;
 	e1[0] = 0; e1[1] = 1; e1[2] = 0;
 	e2[0] = 0; e2[1] = 0; e2[2] = 1;
 }
 
-Canvas3D.Matrix3.prototype.loadRotationX = function(s, c) {
+Canvas3D.Matrix3.prototype.loadRotationX = function(s, c)
+{
 	var e0 = this.e[0], e1 = this.e[1], e2 = this.e[2];
 	e0[0] = 1; e0[1] = 0; e0[2] = 0;
 	e1[0] = 0; e1[1] = c; e1[2] = -s;
 	e2[0] = 0; e2[1] = s; e2[2] = c;
 }
 
-Canvas3D.Matrix3.prototype.loadRotationY = function(s, c) {
+Canvas3D.Matrix3.prototype.loadRotationY = function(s, c)
+{
 	var e0 = this.e[0], e1 = this.e[1], e2 = this.e[2];
 	e0[0] = c;  e0[1] = 0; e0[2] = s;
 	e1[0] = 0;  e1[1] = 1; e1[2] = 0;
 	e2[0] = -s; e2[1] = 0; e2[2] = c;
 }
 
-Canvas3D.Matrix3.prototype.loadRotationZ = function(s, c) {
+Canvas3D.Matrix3.prototype.loadRotationZ = function(s, c)
+{
 	var e0 = this.e[0], e1 = this.e[1], e2 = this.e[2];
 	e0[0] = c; e0[1] = -s; e0[2] = 0;
 	e1[0] = s; e1[1] = c;  e1[2] = 0;
 	e2[0] = 0; e2[1] = 0;  e2[2] = 1;
 }
 
-Canvas3D.Matrix3.prototype.loadRotationAxis = function(A, s, c) {
+Canvas3D.Matrix3.prototype.loadRotationAxis = function(A, s, c)
+{
 	var t = 1 - c;
 	var tx = t * A.x;
 	var ty = t * A.y;

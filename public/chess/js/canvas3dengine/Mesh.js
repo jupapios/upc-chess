@@ -2,7 +2,6 @@
  * Javascript/Canvas Textured 3D Renderer v0.3.1
  * Copyright (c) 2008 Jacob Seidelin, cupboy@gmail.com
  * This software is free to use for non-commercial purposes. For anything else, please contact the author.
- * This is a version modified by Stefano Gioffre'.
  */
 
 Canvas3D.Mesh = function() {
@@ -54,13 +53,15 @@ Canvas3D.Mesh = function() {
 		}
 	}
 
+
 };
 
 // parse the mesh data
 // the mesh data (vertices, faces, texture coordinates, materials) are read from a JSON object structure
 // and copied into local arrays
 // normals are recalculated, if enabled.
-Canvas3D.Mesh.prototype.setMeshData = function(oMeshData, oScene) {
+Canvas3D.Mesh.prototype.setMeshData = function(oMeshData, oScene) 
+{
 	this._oMeshData = oMeshData;
 
 	this._aVertices = [];
@@ -147,8 +148,8 @@ Canvas3D.Mesh.prototype.setMeshData = function(oMeshData, oScene) {
 			var oPoint3 = this._aGlobalVertices[oFace[2] + iVertOffset];
 
 			var oCenter = new Canvas3D.Vec3(
-				(oPoint1.x + oPoint2.x + oPoint3.x) / 3,
-				(oPoint1.y + oPoint2.y + oPoint3.y) / 3,
+				(oPoint1.x + oPoint2.x + oPoint3.x) / 3, 
+				(oPoint1.y + oPoint2.y + oPoint3.y) / 3, 
 				(oPoint1.z + oPoint2.z + oPoint3.z) / 3
 			);
 
@@ -178,14 +179,15 @@ Canvas3D.Mesh.prototype.setMeshData = function(oMeshData, oScene) {
 	}
 }
 
-// here we prepare the texture for easy rendering.
+// here we prepare the texture for easy rendering. 
 // For each face, a triangular region is drawn onto a canvas containing the image data for that face
 // We draw a triangular section on the destination canvas containing the corresponding pixel data from the source texture,
 // using the UV coords to retrieve the correct pixels
 // that way, we have all texture parts rotated and scaled into a common form, so they can easily be drawn later
 // at the moment, the data is read with getImageData and is rather slow, but it should be possible do to sort of the reverse process
 // of the drawTextureTriangle transform to draw these texture parts.
-Canvas3D.Mesh.prototype._bakeTexture = function(oMat) {
+Canvas3D.Mesh.prototype._bakeTexture = function(oMat) 
+{
 
 	var f = this._aFaces.length;
 
@@ -320,14 +322,16 @@ Canvas3D.Mesh.prototype._bakeTexture = function(oMat) {
 
 	} while (--f);
 
+
 	oDstCtx.putImageData(oDstDataObj, 0, 0);
 	oDstCtx.fillRect(0,0,0,0); // Opera doesn't update until we draw something?
 	oMat.facecanvas = oTexCanvas;
 }
 
-var fncZSort = function(a, b) {
+var fncZSort = function(a, b) { 
 	return a.transcenter.z - b.transcenter.z;
 }
+
 
 // math and misc shortcuts
 var sin = Math.sin;
@@ -344,6 +348,7 @@ var fDegRad90 = fDegRad*90;
 var fDegRad180 = fDegRad*180;
 var fSqrt2Div2 = sqrt(2) / 2;
 
+
 // this functions draws a textured (and shaded) triangle on the canvas
 // this is done by rotating/scaling a triangular section in place, setting up a clipping path and drawing the image.
 // if UV coords are enabled, only the correct part of the triangle-strip texture is drawn
@@ -351,7 +356,8 @@ var fSqrt2Div2 = sqrt(2) / 2;
 // some of the code used for skewing the image was inspired by the AS function found here:
 // http://www.senocular.com/flash/actionscript.php?file=ActionScript_1.0/Prototypes/MovieClip/skew.as
 
-Canvas3D.Mesh.prototype._drawTextureTriangle = function(oContext, oMat, oPoint1, oPoint2, oPoint3, iOffsetX, iOffsetY, fShade, oNormal, iIdx) {
+Canvas3D.Mesh.prototype._drawTextureTriangle = function(oContext, oMat, oPoint1, oPoint2, oPoint3, iOffsetX, iOffsetY, fShade, oNormal, iIdx) 
+{
 	if (!oMat.image) {
 		return;
 	}
@@ -435,6 +441,7 @@ Canvas3D.Mesh.prototype._drawTextureTriangle = function(oContext, oMat, oPoint1,
 	var fScaleX = fCosX * fDiv;
 	var fScaleY = (sin(fSkewX) + 1) * fDiv;
 
+
 	// setup the clipping path, so only texture within the triangle is drawn.
 	var iClipX1 = x1 + iOffsetX;
 	var iClipY1 = y1 + iOffsetY;
@@ -444,6 +451,7 @@ Canvas3D.Mesh.prototype._drawTextureTriangle = function(oContext, oMat, oPoint1,
 
 	var iClipX3 = x3 + iOffsetX;
 	var iClipY3 = y3 + iOffsetY;
+
 
 	// here we try to expand the clip path by 1 pixel to get rid of (some of the) gaps between the triangles
 	// we do this simply by moving the topmost point 1px up, the leftmost point 1px left, and so on.
@@ -505,9 +513,9 @@ Canvas3D.Mesh.prototype._drawTextureTriangle = function(oContext, oMat, oPoint1,
 			// draw our texture
 			// there will be a small gap between the triangles. Drawing the texture at offset (-1,-1)  gets rid of some of it.
 			oContext.drawImage(
-				oMat.facecanvas,
+				oMat.facecanvas, 
 				iIdx * iTexRes + iIdx*2+1, 1, iTexRes, iTexRes,
-				-1, -1,
+				-1, -1, 
 				fTriScaleX + 2,
 				fTriScaleY + 2
 			);
@@ -515,14 +523,16 @@ Canvas3D.Mesh.prototype._drawTextureTriangle = function(oContext, oMat, oPoint1,
 	} else {
 		// no UV, just draw the same texture for all faces
 		oContext.drawImage(
-			oMatImage.canvas,
-			-1, -1,
+			oMatImage.canvas, 
+			-1, -1, 
 			fTriScaleX + 2,
 			fTriScaleY + 2
 		);
 	}
 
+
 	oContext.restore();
+
 
 	// if shading is turned on, render a semi-transparent black triangle on top.
 	// that means that a fully lit triangle will just be the raw texture, and the less lit a triangle is, the darker it gets.
@@ -540,7 +550,8 @@ Canvas3D.Mesh.prototype._drawTextureTriangle = function(oContext, oMat, oPoint1,
 }
 
 // draw the mesh on the oContext canvas context, at offset [iOffsetX, iOffsetY]
-Canvas3D.Mesh.prototype.draw = function(oContext, iOffsetX, iOffsetY) {
+Canvas3D.Mesh.prototype.draw = function(oContext, iOffsetX, iOffsetY) 
+{
 	if (!this._bVisible) return;
 
 	var oScene = this._oScene;
@@ -571,6 +582,7 @@ Canvas3D.Mesh.prototype.draw = function(oContext, iOffsetX, iOffsetY) {
 		// nothing to draw
 		return;
 	}
+
 
 	// let the camera transform all vertices and project them to 2D.
 	var aPoints2D = [];
@@ -603,6 +615,7 @@ Canvas3D.Mesh.prototype.draw = function(oContext, iOffsetX, iOffsetY) {
 
 		aSortedFaces = aFaces;
 	}
+
 
 	f = aSortedFaces.length;
 	if (f < 1) {
@@ -756,45 +769,54 @@ Canvas3D.Mesh.prototype.draw = function(oContext, iOffsetX, iOffsetY) {
 	this._bDirty = false;
 }
 
-Canvas3D.Mesh.prototype.setScene = function(oScene) {
+Canvas3D.Mesh.prototype.setScene = function(oScene)
+{
 	if (this._oScene != oScene) {
 		this._oScene = oScene;
 	}
 }
 
-Canvas3D.Mesh.prototype.setLighting = function(bEnable) {
+Canvas3D.Mesh.prototype.setLighting = function(bEnable)
+{
 	this._bShading = bEnable;
 }
 
-Canvas3D.Mesh.prototype.setBackfaceCull = function(bEnable) {
+Canvas3D.Mesh.prototype.setBackfaceCull = function(bEnable)
+{
 	this._bBackfaceCull = bEnable;
 }
 
-Canvas3D.Mesh.prototype.setZSort = function(bEnable) {
+Canvas3D.Mesh.prototype.setZSort = function(bEnable)
+{
 	this._bZSort = bEnable;
 }
 
-Canvas3D.Mesh.prototype.setFill = function(bEnable) {
+Canvas3D.Mesh.prototype.setFill = function(bEnable)
+{
 	this._bFill = bEnable;
 }
 
-Canvas3D.Mesh.prototype.setWire = function(bEnable) {
+Canvas3D.Mesh.prototype.setWire = function(bEnable)
+{
 	this._bWire = bEnable;
 }
 
-Canvas3D.Mesh.prototype.setTexture = function(bEnable) {
+Canvas3D.Mesh.prototype.setTexture = function(bEnable)
+{
 	this._bTexture = bEnable;
 }
 
-Canvas3D.Mesh.prototype.setTextureShading = function(bEnable) {
+Canvas3D.Mesh.prototype.setTextureShading = function(bEnable)
+{
 	this._bTextureShading = bEnable;
 }
 
-Canvas3D.Mesh.prototype._updateGlobalVertices = function() {
+Canvas3D.Mesh.prototype._updateGlobalVertices = function()
+{
 	var oRot = this._oRotation;
 	var oPos = this._oPosition;
 
-	for (var i = 0; i < this._aVertices.length; i++) {
+	for (var i=0;i<this._aVertices.length;i++) {
 		var oRotatedVertex = new Canvas3D.Vec3(
 			this._aVertices[i].x,
 			this._aVertices[i].y,
@@ -816,8 +838,9 @@ Canvas3D.Mesh.prototype._updateGlobalVertices = function() {
 	this._recalcNormals();
 }
 
-Canvas3D.Mesh.prototype._recalcNormals = function() {
-	for (var f = 0; f < this._aFaces.length; f++) {
+Canvas3D.Mesh.prototype._recalcNormals = function()
+{
+	for (var f=0;f<this._aFaces.length;f++) {
 		var oFace = this._aFaces[f];
 
 		var oPoint1 = this._aGlobalVertices[oFace.a];
@@ -825,8 +848,8 @@ Canvas3D.Mesh.prototype._recalcNormals = function() {
 		var oPoint3 = this._aGlobalVertices[oFace.c];
 
 		var oCenter = new Canvas3D.Vec3(
-			(oPoint1.x + oPoint2.x + oPoint3.x) / 3,
-			(oPoint1.y + oPoint2.y + oPoint3.y) / 3,
+			(oPoint1.x + oPoint2.x + oPoint3.x) / 3, 
+			(oPoint1.y + oPoint2.y + oPoint3.y) / 3, 
 			(oPoint1.z + oPoint2.z + oPoint3.z) / 3
 		);
 
@@ -841,7 +864,9 @@ Canvas3D.Mesh.prototype._recalcNormals = function() {
 	}
 }
 
-Canvas3D.Mesh.prototype.setPosition = function(oVec) {
+
+Canvas3D.Mesh.prototype.setPosition = function(oVec)
+{
 	if (oVec.x != this._oPosition.x || oVec.y != this._oPosition.y || oVec.z != this._oPosition.z) {
 		this._oPosition = oVec;
 		this._updateGlobalVertices();
@@ -849,7 +874,8 @@ Canvas3D.Mesh.prototype.setPosition = function(oVec) {
 	}
 }
 
-Canvas3D.Mesh.prototype.setRotation = function(oVec) {
+Canvas3D.Mesh.prototype.setRotation = function(oVec)
+{
 	this._oRotation = oVec;
 	this._updateGlobalVertices();
 
@@ -857,50 +883,63 @@ Canvas3D.Mesh.prototype.setRotation = function(oVec) {
 
 }
 
-Canvas3D.Mesh.prototype.getPosition = function(oVec) {
+Canvas3D.Mesh.prototype.getPosition = function(oVec)
+{
 	return this._oPosition;
 }
 
-Canvas3D.Mesh.prototype.setForcedZ = function(iZ) {
+Canvas3D.Mesh.prototype.setForcedZ = function(iZ)
+{
 	this._iForcedZ = iZ;
 }
 
-Canvas3D.Mesh.prototype.getForcedZ = function() {
+Canvas3D.Mesh.prototype.getForcedZ = function()
+{
 	return this._iForcedZ;
 }
 
-Canvas3D.Mesh.prototype.getHideWhenRotating = function() {
+Canvas3D.Mesh.prototype.getHideWhenRotating = function()
+{
 	return this._bHideWhenRotating;
 }
 
-Canvas3D.Mesh.prototype.setHideWhenRotating = function(bEnable) {
+Canvas3D.Mesh.prototype.setHideWhenRotating = function(bEnable)
+{
 	this._bHideWhenRotating = bEnable;
 }
 
-Canvas3D.Mesh.prototype.getDirty = function() {
+Canvas3D.Mesh.prototype.getDirty = function()
+{
 	return this._bDirty;
 }
 
-Canvas3D.Mesh.prototype.hide = function() {
+
+Canvas3D.Mesh.prototype.hide = function()
+{
 	this._bVisible = false;
 	this._bDirty = true;
 }
 
-Canvas3D.Mesh.prototype.show = function() {
+Canvas3D.Mesh.prototype.show = function()
+{
 	this._bVisible = true;
 	this._bDirty = true;
 }
 
-Canvas3D.Mesh.prototype.isVisible = function() {
+Canvas3D.Mesh.prototype.isVisible = function()
+{
 	return this._bVisible;
 }
 
-Canvas3D.Mesh.prototype.setScale = function(fScale) {
+
+Canvas3D.Mesh.prototype.setScale = function(fScale)
+{
 	this._fScale = fScale;
 	this._bDirty = true;
 	this._updateGlobalVertices();
 }
 
-Canvas3D.Mesh.prototype.getScale = function() {
+Canvas3D.Mesh.prototype.getScale = function()
+{
 	return this._fScale;
 }

@@ -2,8 +2,9 @@
  * Javascript/Canvas Textured 3D Renderer v0.3
  * Copyright (c) 2008 Jacob Seidelin, cupboy@gmail.com
  * This software is free to use for non-commercial purposes. For anything else, please contact the author.
- * This is a version modified by Stefano Gioffre'.
  */
+
+(function() {
 
 var __iLightIDCounter = 0;
 
@@ -17,41 +18,49 @@ Canvas3D.Light = function() {
 
 var proto = Canvas3D.Light.prototype;
 	
-proto.setPosition = function(oPos) {
+proto.setPosition = function(oPos) 
+{
 	this._oPosition = oPos;
 	this._bDirty = true;
 }
 
-proto.getPosition = function() {
+proto.getPosition = function() 
+{
 	return this._oPosition;
 }
 
-proto.setColor = function(oColor) {
+proto.setColor = function(oColor) 
+{
 	this._oColor = oColor;
 	this._bDirty = true;
 }
 
-proto.getColor = function() {
+proto.getColor = function() 
+{
 	return this._oColor;
 }
 
-proto.setIntensity = function(fIntensity) {
+proto.setIntensity = function(fIntensity) 
+{
 	this._fIntensity = fIntensity;
 	this._bDirty = true;
 }
 
-proto.getIntensity = function(fIntensity) {
+proto.getIntensity = function(fIntensity) 
+{
 	return this._fIntensity;
 }
 
-proto.setScene = function(oScene) {
+proto.setScene = function(oScene)
+{
 	if (this._oScene != oScene) {
 		this._oScene = oScene;
 		this._bDirty = true;
 	}
 }
 
-proto.draw = function(oContext, iOffsetX, iOffsetY) {
+proto.draw = function(oContext, iOffsetX, iOffsetY) 
+{
 	var oScene = this._oScene;
 	var oCam = oScene.getActiveCamera();
 
@@ -73,3 +82,5 @@ proto.getDirty = function() {
 proto.setDirty = function(bDirty) {
 	this._bDirty = bDirty;
 }
+
+})();

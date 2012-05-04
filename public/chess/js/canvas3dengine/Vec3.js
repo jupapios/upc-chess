@@ -2,10 +2,12 @@
  * Javascript/Canvas Textured 3D Renderer v0.3
  * Copyright (c) 2008 Jacob Seidelin, cupboy@gmail.com
  * This software is free to use for non-commercial purposes. For anything else, please contact the author.
- * This is a version modified by Stefano Gioffre'.
  */
 
-Canvas3D.Vec3 = function(vx, vy, vz) {
+(function() {
+
+Canvas3D.Vec3 = function(vx, vy, vz) 
+{
 	this.x = vx;
 	this.y = vy;
 	this.z = vz;
@@ -24,12 +26,14 @@ Canvas3D.Vec3.prototype.addVector = function(V) {
 	return this;
 }
 
+
 Canvas3D.Vec3.prototype.multiply = function(fScalar) {
 	this.x *= fScalar;
 	this.y *= fScalar;
 	this.z *= fScalar;
 	return this;
 }
+
 
 Canvas3D.Vec3.prototype.subVector = function(V) {
 	this.x -= V.x;
@@ -97,9 +101,12 @@ Canvas3D.Vec3.prototype.rotateZ = function(a) {
 	this.y = s * rx + c * ry;
 }
 
-Canvas3D.Vec3.prototype.dist = function(oVec) {
+Canvas3D.Vec3.prototype.dist = function(oVec)
+{
 	var x = oVec.x - this.x;
 	var y = oVec.y - this.y;
 	var z = oVec.z - this.z;
 	return Math.sqrt(x*x + y*y + z*z);
 }
+
+})();

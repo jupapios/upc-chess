@@ -1,4 +1,5 @@
 define('app/chess/model', function () {
+	
 	return new Class({
 
 		model: {},
