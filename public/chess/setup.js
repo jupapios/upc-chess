@@ -66,11 +66,11 @@ function init()
 
 	oCam = new Canvas3D.Camera();
 
-	oCam.setPosition(new Canvas3D.Vec3(0,50,-100));
+	oCam.setPosition(new Canvas3D.Vec3(100,50,-120));
 
 	oCam.setScale(18);
 	oCam.setFOV(110);
-	oCam.setFocalDistance(50);
+	oCam.setFocalDistance(-10);
 
 	oCam.setReverseX(true);
 
