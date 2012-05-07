@@ -19,18 +19,13 @@ var mH=3;
 
 
 var bBoardLoaded = false;
-var bKingLoaded = false;
-var bQueenLoaded = false;
-var bRookLoaded = false;
-var bBishopLoaded = false;
 var bKnightLoaded = false;
-var bPawnLoaded = false;
 
 var oSelectorCanvas;	// for drawing the selector square
 var oValidCanvas;	// for drawing "valid move" squares
 
-var iWidth = 1200;
-var iHeight = 900;
+var iWidth = 1000;
+var iHeight = 600;
 
 var oCam;
 
@@ -76,7 +71,7 @@ function init()
 
 	//oScene.setUpVector(new Canvas3D.Vec3(0,-1,0));
 
-	oCam.lookAt(new Canvas3D.Vec3(0,0,0), oScene.getUpVector());
+	oCam.lookAt(new Canvas3D.Vec3(0,-20,0), oScene.getUpVector());
 
 	oCam.updateRotationMatrix();
 
@@ -98,13 +93,7 @@ function init()
 	oScene.addLight(oLight3);
 
 	XHR("meshes/board.json3d", onBoardLoaded);
-
-	//XHR("meshes/king.json3d", onKingLoaded);
-	//XHR("meshes/queen.json3d", onQueenLoaded);
-	//XHR("meshes/bishop.json3d", onBishopLoaded);
 	XHR("meshes/knight.json3d", onKnightLoaded);
-	//XHR("meshes/rook.json3d", onRookLoaded);
-	//XHR("meshes/pawn.json3d", onPawnLoaded);
 
 	Canvas3D.addEvent(document, "keydown",
 		function(e) {
@@ -245,6 +234,7 @@ function init()
 
 				setTimeout(showSelector, 10);
 				setTimeout(showValidMoves, 10);
+
 			} else {
 
 				var oPos = getElementPos(oScene.getInputLayer());
@@ -257,10 +247,13 @@ function init()
 					iSelectorY = oRegion.y;
 	
 					updateSelector();
-					if (bPieceSelected)
+					if (bPieceSelected) {
 						attemptMovePiece();
-					else 
+						
+					} else {
 						selectPiece();
+						console.log(oRegion)
+					}
 				}
 			}
 		}
@@ -567,6 +560,8 @@ function attemptMovePiece()
 {
 	var iX = iSelectorX;
 	var iY = iSelectorY;
+
+	//console.log(iX, iY, oSelectedPiece)
 
 	if (oSelectedPiece.pos[0] == iX && oSelectedPiece.pos[1] == iY) {
 		// cancel move
@@ -948,5 +943,9 @@ function updateBoard() {
 	}
 }
 Canvas3D.addEvent(window, "load", init);
+
+/*iSelectorX = 1
+iSelectorY = 0
+attemptMovePiece()*/
 
 })();
