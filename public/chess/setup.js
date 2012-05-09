@@ -53,6 +53,34 @@ function getElementPos(oElement) {
 	}
 }
 
+function moveSelect(x,y,e) {
+				e = e || window.event
+				var oPos = getElementPos(oScene.getInputLayer());
+				iMouseDownX = e.clientX - oPos.x;
+				iMouseDownY = e.clientY - oPos.y;
+
+				console.log(oPos, iMouseDownX, iMouseDownY)
+
+				var oRegion = checkMouseRegions(e.clientX - oPos.x, e.clientY - oPos.y);
+				console.log(oRegion)
+				if (oRegion) {
+					iSelectorX = x || oRegion.x;
+					iSelectorY = y || oRegion.y;
+	
+					updateSelector();
+					if (bPieceSelected) {
+						attemptMovePiece();
+						console.log('CLICK 2 TIME: ', oRegion)
+						
+					} else {
+						//iSelectorX = 0;
+						//iSelectorY = 1
+						selectPiece();
+						console.log('CLICK 1 TIME: ', oRegion)
+					}
+				}	
+}
+
 
 function init() 
 {
@@ -236,12 +264,14 @@ function init()
 				setTimeout(showValidMoves, 10);
 
 			} else {
-
 				var oPos = getElementPos(oScene.getInputLayer());
 				iMouseDownX = e.clientX - oPos.x;
 				iMouseDownY = e.clientY - oPos.y;
 
+				console.log(oPos, iMouseDownX, iMouseDownY)
+
 				var oRegion = checkMouseRegions(e.clientX - oPos.x, e.clientY - oPos.y);
+				console.log(oRegion)
 				if (oRegion) {
 					iSelectorX = oRegion.x;
 					iSelectorY = oRegion.y;
@@ -249,12 +279,15 @@ function init()
 					updateSelector();
 					if (bPieceSelected) {
 						attemptMovePiece();
+						console.log('CLICK 2 TIME: ', oRegion)
 						
 					} else {
+						//iSelectorX = 0;
+						//iSelectorY = 1
 						selectPiece();
-						console.log(oRegion)
+						console.log('CLICK 1 TIME: ', oRegion)
 					}
-				}
+				}				
 			}
 		}
 	);
@@ -346,6 +379,28 @@ function init()
 	oScene.begin();
 
 	updateMouseRegions();
+
+	// MI TEST!
+
+	/*var oRegion = {
+		x: 0,
+		y: 0
+	}
+
+	iSelectorX = oRegion.x
+	iSelectorY = oRegion.y
+	updateSelector()
+	selectPiece()*/
+
+ 	/*oRegion = {
+		x: 1,
+		y: 2
+	}	
+
+	updateSelector()
+	attemptMovePiece()*/
+	moveSelect(0,2)
+	moveSelect(1,0)
 }
 
 
@@ -522,18 +577,25 @@ function selectPiece()
 	var iX = iSelectorX;
 	var iY = iSelectorY;
 
+	//console.log(1)
+
 	if (iX < 0 || iX > 7 || iY < 0 || iY > 7) {
 		return false;
 	}
-	for (var i=0;i<aPieces.length;i++) {
+	//console.log(1.1, aPieces)
+	for (var i=0;i<5;i++) {
+		//console.log(2)
 		if (aPieces[i].pos[0] == iX && aPieces[i].pos[1] == iY) {
+			//console.log(3)
 			oPiece = aPieces[i];
 			if (oPiece.color == strActivePlayer) {
+				//console.log(4)
 				oSelectedPiece = aPieces[i];
 				bPieceSelected = true;
 			}
 		}
 	}
+	//console.log(5)
 	updateSelector();
 	updateValidMoves();
 }
@@ -560,6 +622,8 @@ function attemptMovePiece()
 {
 	var iX = iSelectorX;
 	var iY = iSelectorY;
+
+	//console.log('INTO attemptMovePiece: ', iX, iY)
 
 	//console.log(iX, iY, oSelectedPiece)
 
@@ -947,5 +1011,8 @@ Canvas3D.addEvent(window, "load", init);
 /*iSelectorX = 1
 iSelectorY = 0
 attemptMovePiece()*/
+
+
+
 
 })();
