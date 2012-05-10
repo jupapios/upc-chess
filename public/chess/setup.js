@@ -55,30 +55,34 @@ function getElementPos(oElement) {
 
 function moveSelect(x,y,e) {
 				e = e || window.event
+				console.log(x,y,e)
 				var oPos = getElementPos(oScene.getInputLayer());
 				iMouseDownX = e.clientX - oPos.x;
 				iMouseDownY = e.clientY - oPos.y;
 
 				console.log(oPos, iMouseDownX, iMouseDownY)
 
-				var oRegion = checkMouseRegions(e.clientX - oPos.x, e.clientY - oPos.y);
-				console.log(oRegion)
-				if (oRegion) {
-					iSelectorX = x || oRegion.x;
-					iSelectorY = y || oRegion.y;
+				try {
+					var oRegion = checkMouseRegions(e.clientX - oPos.x, e.clientY - oPos.y);
+					iSelectorX = oRegion.x
+					iSelectorY = oRegion.y
+				}
+				catch(err) {
+					iSelectorX = x
+					iSelectorY = y
+				}
+				console.log('LALALAL!!!!!!!!!')
+			
 	
-					updateSelector();
-					if (bPieceSelected) {
-						attemptMovePiece();
-						console.log('CLICK 2 TIME: ', oRegion)
-						
-					} else {
-						//iSelectorX = 0;
-						//iSelectorY = 1
-						selectPiece();
-						console.log('CLICK 1 TIME: ', oRegion)
-					}
-				}	
+				updateSelector();
+				if (bPieceSelected) {
+					attemptMovePiece();
+					console.log('CLICK 2 TIME: ', oRegion)
+					
+				} else {
+					selectPiece();
+					console.log('CLICK 1 TIME: ', oRegion)
+				}
 }
 
 
@@ -399,8 +403,8 @@ function init()
 
 	updateSelector()
 	attemptMovePiece()*/
-	moveSelect(0,2)
-	moveSelect(1,0)
+
+	//moveSelect(1,0)
 }
 
 
@@ -577,14 +581,18 @@ function selectPiece()
 	var iX = iSelectorX;
 	var iY = iSelectorY;
 
+	var test = aPieces
+
 	//console.log(1)
 
 	if (iX < 0 || iX > 7 || iY < 0 || iY > 7) {
 		return false;
 	}
-	//console.log(1.1, aPieces)
-	for (var i=0;i<5;i++) {
+	//console.log('LENNGG', Object.keys(aPieces).length, test)
+	if(aPieces)
+	for (var i=0;i<6;i++) {
 		//console.log(2)
+		console.log(aPieces, test)
 		if (aPieces[i].pos[0] == iX && aPieces[i].pos[1] == iY) {
 			//console.log(3)
 			oPiece = aPieces[i];
@@ -1006,7 +1014,37 @@ function updateBoard() {
 		oPiece.mesh.setPosition(new Canvas3D.Vec3(oPos.x, 0, oPos.y));
 	}
 }
-Canvas3D.addEvent(window, "load", init);
+
+
+
+
+
+Canvas3D.addEvent(window, "load", function() {
+	init()
+
+	/*$$('a').addEvent('mouseover', function () {
+		for(var i=0; i<4; i++) {
+			setInterval(function() {
+				$$('a').set('text', this.get('text'))
+			}.bind(this),200)
+		}
+	})	*/
+
+	$('btn-solve').addEvent('click', function () {
+		var time = 0
+		$$('.info').addClass('opacity')
+		setTimeout(function() {
+			$$('.info').setStyle('display', 'none')
+			$('time').setStyle('display', 'block')
+		}, 1500)
+		setInterval(function() {
+			$('time').set('text', time++)
+		},1)
+		moveSelect(0,2, undefined)
+		moveSelect(1,0, undefined)
+	})
+
+});
 
 /*iSelectorX = 1
 iSelectorY = 0
@@ -1016,3 +1054,4 @@ attemptMovePiece()*/
 
 
 })();
+

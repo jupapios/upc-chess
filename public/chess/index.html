@@ -13,7 +13,7 @@
 
   <meta name="viewport" content="width=device-width">
 
-  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="/css/style.css">
 </head>
 <body>
   <!-- Prompt IE 6 users to install Chrome Frame. Remove this if you support IE 6.
@@ -31,8 +31,25 @@
 
   <script src="setup.js"></script>
 
+  <div class="menu">
+    <div>
+      <span class="info">solve</span>
+      <a class="icon" id="btn-solve" href="#" onclick="return false;">!</a>
+    </div>
+    <div>
+      <span class="info">code</span>
+      <a class="icon" href="http://github.com/gotik/upc-chess" target="_blank">"</a>
+    </div>
+    <div>
+      <span class="info">time</span>
+      <span id="time" class="" style="display: none">0</span>
+      <a class="icon" href="#" onclick="return false;">$</a>
+    </div>
+  </div>
   <div id="scenecontainer"></div>
 
+
+ <script src="/js/lib/mootools-core.js"></script>
   <script>
   /*
     var _gaq=[['_setAccount','UA-XXXXX-X'],['_trackPageview']];

@@ -340,9 +340,37 @@ td
 @import 'nib'
 @import '_animations'
 
+@import '_fonts'
 
 
+a
+	text-decoration none
+	transition all 400ms linear
 
+
+.menu
+	position fixed
+	top 10px
+	right 20px
+
+	span
+		display block
+		margin-right 10px
+		float left
+		margin-top 14px
+		transition all 1.5s ease
+
+	a
+		float right
+
+	& > div
+		clearfix()
+
+.opacity
+	opacity 0
+
+.none
+	display none
 
 
 

@@ -1,0 +1,32 @@
+@font-face
+	font-family: 'IcoMoon';
+	src: url('../ico/icomoon.eot');
+	src: url('../ico/icomoon.eot?#iefix') format('embedded-opentype'),	url('../ico/icomoon.svg#IcoMoon') format('svg'), url('../ico/icomoon.woff') format('woff'), url('../ico/icomoon.ttf') format('truetype')
+	font-weight: normal
+	font-style: normal
+
+.icon
+.icon:visited
+	color black
+	font-family 'IcoMoon'
+	font-size 2em
+
+	&:hover
+		opacity 0.4
+
+.icon-b
+.icon-a
+	transition all 250ms linear
+
+.icon-b:before
+.icon-a:after
+	font-family 'IcoMoon'
+	content attr(data-icon)
+	color black
+	font-size 2em
+
+.icon-b:hover:before
+	color gray
+
+.icon-b:hover:after
+	color gray
