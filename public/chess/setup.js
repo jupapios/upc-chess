@@ -55,12 +55,12 @@ function getElementPos(oElement) {
 
 function moveSelect(x,y,e) {
 				e = e || window.event
-				console.log(x,y,e)
+				//console.log(x,y,e)
 				var oPos = getElementPos(oScene.getInputLayer());
 				iMouseDownX = e.clientX - oPos.x;
 				iMouseDownY = e.clientY - oPos.y;
 
-				console.log(oPos, iMouseDownX, iMouseDownY)
+				//console.log(oPos, iMouseDownX, iMouseDownY)
 
 				try {
 					var oRegion = checkMouseRegions(e.clientX - oPos.x, e.clientY - oPos.y);
@@ -71,7 +71,6 @@ function moveSelect(x,y,e) {
 					iSelectorX = x
 					iSelectorY = y
 				}
-				console.log('LALALAL!!!!!!!!!')
 			
 	
 				updateSelector();
@@ -619,6 +618,7 @@ function updateValidMoves() {
 		for (var y=0; y<mH; y++) {
 			if (isValidMove(oSelectedPiece, x, y)) {
 				makeRegionPath(oCtx, x, y);
+				console.log(oSelectedPiece, x,y)
 				oCtx.fill();
 			}
 		}	
@@ -709,7 +709,7 @@ function isValidMove(oPiece, iX, iY)
 		iXDir = -1;
 	}
 
-	if (oPiece.type ==  "pawn") { 
+/*	if (oPiece.type ==  "pawn") { 
 		if (iX*iXDir <= oPiece.pos[0]*iXDir) {
 			return false;
 		}
@@ -733,7 +733,7 @@ function isValidMove(oPiece, iX, iY)
 				}
 			}
 		}
-	}
+	}*/
 
 	if (oPiece.type == "knight") {
 		if (
@@ -757,7 +757,7 @@ function isValidMove(oPiece, iX, iY)
 		}
 	}
 
-	if (oPiece.type == "rook" || oPiece.type == "queen") {
+/*	if (oPiece.type == "rook" || oPiece.type == "queen") {
 		if (iX == oPiece.pos[0] || iY == oPiece.pos[1]) {
 			if (iX == oPiece.pos[0]) {
 				if (oPiece.pos[1] < iY) {
@@ -869,7 +869,7 @@ function isValidMove(oPiece, iX, iY)
 			}
 			return true;
 		}
-	}
+	}*/
 	return false;
 }
 
@@ -1031,7 +1031,10 @@ Canvas3D.addEvent(window, "load", function() {
 	})	*/
 
 	$('btn-solve').addEvent('click', function () {
-		var time = 0
+		var
+			time = 0,
+			init_date = new Date()
+			actual_date = init_date
 		$$('.info').addClass('opacity')
 		setTimeout(function() {
 			$$('.info').setStyle('display', 'none')
@@ -1039,12 +1042,82 @@ Canvas3D.addEvent(window, "load", function() {
 		}, 1500)
 		setInterval(function() {
 			$('time').set('text', time++)
-		},1)
-		moveSelect(0,2, undefined)
-		moveSelect(1,0, undefined)
+		}, 1000)
+
+
+
+
+		//moveSelect(0,2, undefined)
+		//moveSelect(1,0, undefined)
+
+		breadth(
+			[
+				[1,1,1],
+				[0,0,0],
+				[0,0,0],
+				[-1,-1,-1]
+			]
+		)
+
+
+
+		/* on finish
+			actual_date = new Date()
+			total_time = actual_date - init_date
+			*/
 	})
 
 });
+
+function breadth(initial) {
+	var
+		actual,
+		nodes = [],
+		open = []
+	open.push(initial)
+	while(open.length > 0) {
+		// expand node
+		actual = open.pop(initial)
+
+		console.log('NODES ',actual)
+		nodes = get_nodes(actual)
+		//console.log('LALALALA> ', nodes)
+	}
+
+	
+
+
+}
+
+
+function get_nodes(node) {
+	var tmp = []
+		/*for(var i=0; i<node.length; i++) {
+			row = node[i]
+			for(var j=0; j<row.length; j++) {
+				box = row[j]
+				if(box!==0) {
+
+				}
+			}
+		}*/
+		for(var i=0; i<aPieces.length; i++) {
+			oSelectedPiece = aPieces[i]
+			for (var x=0; x<mW; x++) {
+				for (var y=0; y<mH; y++) {
+					if (isValidMove(oSelectedPiece, x, y)) {
+						var copy = node
+						console.log(copy)
+						copy[oSelectedPiece.pos[0]][oSelectedPiece.pos[1]] = 0	
+						copy[x][y] = oSelectedPiece.type == "white" ? 1 : -1
+						tmp.push(copy)
+					}
+				}	
+			}	
+		}
+
+		return tmp
+}
 
 /*iSelectorX = 1
 iSelectorY = 0

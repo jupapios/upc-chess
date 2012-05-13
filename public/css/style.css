@@ -53,13 +53,13 @@ td{vertical-align:top}
 @font-face{font-family:'IcoMoon';src:url("../ico/icomoon.eot");src:url("../ico/icomoon.eot?#iefix") format('embedded-opentype'),url("../ico/icomoon.svg#IcoMoon") format('svg'),url("../ico/icomoon.woff") format('woff'),url("../ico/icomoon.ttf") format('truetype');font-weight:normal;font-style:normal}
 .icon,.icon:visited{color:#000;font-family:'IcoMoon';font-size:2em;}
 .icon:hover,.icon:visited:hover{opacity:.4;filter:progid:DXImageTransform.Microsoft.Alpha(Opacity=40)}
-.icon-b,.icon-a{-webkit-transition:all 250ms linear;-moz-transition:all 250ms linear;transition:all 250ms linear}
+.icon-b,.icon-a{-webkit-transition:all 250ms linear;-moz-transition:all 250ms linear;-o-transition:all 250ms linear;-ms-transition:all 250ms linear;transition:all 250ms linear}
 .icon-b:before,.icon-a:after{font-family:'IcoMoon';content:attr(data-icon);color:#000;font-size:2em}
 .icon-b:hover:before{color:#808080}
 .icon-b:hover:after{color:#808080}
-a{text-decoration:none;-webkit-transition:all 400ms linear;-moz-transition:all 400ms linear;transition:all 400ms linear}
+a{text-decoration:none;-webkit-transition:all 400ms linear;-moz-transition:all 400ms linear;-o-transition:all 400ms linear;-ms-transition:all 400ms linear;transition:all 400ms linear}
 .menu{position:fixed;top:10px;right:20px;}
-.menu span{display:block;margin-right:10px;float:left;margin-top:14px;-webkit-transition:all 1.5s ease;-moz-transition:all 1.5s ease;transition:all 1.5s ease}
+.menu span{display:block;margin-right:10px;float:left;margin-top:14px;-webkit-transition:all 1.5s ease;-moz-transition:all 1.5s ease;-o-transition:all 1.5s ease;-ms-transition:all 1.5s ease;transition:all 1.5s ease}
 .menu a{float:right}
 .menu > div{zoom:1}
 .menu > div:before,.menu > div:after{content:"";display:table}
