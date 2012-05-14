@@ -748,9 +748,10 @@ function isValidMove(oPiece, iX, iY)
 		) {
 			var oTargetPiece;
 			if (oTargetPiece = squareHasPiece(iX, iY)) {
-				if (oTargetPiece.color != oPiece.color) {
+				/*if (oTargetPiece.color != oPiece.color) {
 					return true;
-				}
+				}*/
+				return false;
 			} else {
 				return true;
 			}
@@ -1050,7 +1051,20 @@ Canvas3D.addEvent(window, "load", function() {
 		//moveSelect(0,2, undefined)
 		//moveSelect(1,0, undefined)
 
-		breadth(
+		/*breadth(
+			[
+				[1,1,1],
+				[0,0,0],
+				[0,0,0],
+				[1,1,1]
+			]
+		)*/
+
+		//breadth(aPieces)
+
+		var initial = new Node(
+			global_id,
+			0,
 			[
 				[1,1,1],
 				[0,0,0],
@@ -1058,6 +1072,11 @@ Canvas3D.addEvent(window, "load", function() {
 				[-1,-1,-1]
 			]
 		)
+		/*var test2 = new Node(2,1,['hola2'])
+		console.log(test)
+		console.log(test2)
+		*/
+		breadth(initial)
 
 
 
@@ -1069,29 +1088,85 @@ Canvas3D.addEvent(window, "load", function() {
 
 });
 
+var global_id=1
+
+Node = function(id, pid, info) {
+	this.id = id
+	this.pid = pid
+	this.info = info
+	//console.log('SETENDO NOODO', info)
+
+	this.getId = function () {
+		return this.id
+	}
+
+	this.getPid = function () {
+		return this.pid
+	}
+
+	this.getInfo = function () {
+		return this.info
+	}
+}
+
+function isValid(x1, y1, x, y) {
+		if (
+			(x1 == x+2 && y1 == y-1) ||
+			(x1 == x+2 && y1 == y+1) ||
+			(x1 == x-2 && y1 == y-1) ||
+			(x1 == x-2 && y1 == y+1) ||
+			(x1 == x+1 && y1 == y-2) ||
+			(x1 == x+1 && y1 == y+2) ||
+			(x1 == x-1 && y1 == y-2) ||
+			(x1 == x-1 && y1 == y+2)
+		) {
+			var oTargetPiece;
+			if (oTargetPiece = squareHasPiece(x1, y1)) {
+				/*if (oTargetPiece.color != oPiece.color) {
+					return true;
+				}*/
+				return true;
+			} else {
+				return false;
+			}
+		}
+		return false;
+}
+
+
+var global_turn = true
 function breadth(initial) {
 	var
 		actual,
 		nodes = [],
-		open = []
+		open = [],
+		close = []
+
 	open.push(initial)
-	while(open.length > 0) {
+	console.log(initial)
+
+	while(open.length) {
+
 		// expand node
 		actual = open.pop(initial)
+		//close.push(actual)
 
-		console.log('NODES ',actual)
-		nodes = get_nodes(actual)
-		//console.log('LALALALA> ', nodes)
+		//console.log('NODES ',actual)
+
+		nodes = get_nodes(actual.getInfo())
+		//if(nodes) open.push(nodes)
+		console.log(nodes)
+
 	}
 
-	
-
-
 }
+
+flag = true
 
 
 function get_nodes(node) {
 	var tmp = []
+	console.log(node)
 		/*for(var i=0; i<node.length; i++) {
 			row = node[i]
 			for(var j=0; j<row.length; j++) {
@@ -1101,21 +1176,61 @@ function get_nodes(node) {
 				}
 			}
 		}*/
-		for(var i=0; i<aPieces.length; i++) {
+		/*for(var i=0; i<aPieces.length; i++) {
 			oSelectedPiece = aPieces[i]
 			for (var x=0; x<mW; x++) {
 				for (var y=0; y<mH; y++) {
-					if (isValidMove(oSelectedPiece, x, y)) {
-						var copy = node
+					if (isValid(oSelectedPiece, x, y)) {
+						var tmp2 = aPieces
+						/*var copy = node
 						console.log(copy)
 						copy[oSelectedPiece.pos[0]][oSelectedPiece.pos[1]] = 0	
 						copy[x][y] = oSelectedPiece.type == "white" ? 1 : -1
 						tmp.push(copy)
+						
+						//tmp = aPieces
+						tmp2[i].pos[0] = x
+						tmp2[i].pos[1] = y
+						tmp.push(tmp2)
 					}
 				}	
 			}	
+		}*/
+
+		//4x3
+
+		//Se ejecuta 4 veces
+		for(var i=0; i<mW; i++) {
+			//console.log(node[i])
+
+			//Se ejecuta 3 veces
+			for(var j=0; j<mH; j++) {
+
+				// Solo recorre para los 6 caballos
+				// siempre se ejcuta 3 veces
+				if(node[i][j] == global_turn) {
+					//console.log('HOLA')
+					for (var x=0; x<mW; x++) {
+						for (var y=0; y<mH; y++) {
+							if((i != x || j != y) && isValid(i, j, x, y)) {
+								var tmp2 = node
+								tmp2[i][j] = 0
+								//tmp2[x][y] = global_turn
+								console.log(tmp2)
+								tmp.push(tmp2)
+								//tmp2 = null
+							}
+						}	
+					}
+
+				}
+
+			}
 		}
 
+		if(flag) global_turn += 1
+		else global_turn -= 1
+		flag = !flag
 		return tmp
 }
 
