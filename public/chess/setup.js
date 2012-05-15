@@ -1074,7 +1074,9 @@ Canvas3D.addEvent(window, "load", function() {
 		console.log(test)
 		console.log(test2)
 		*/
-		breadth(initial)
+		setTimeout(function() {
+			breadth(initial)
+		})
 
 
 
@@ -1091,21 +1093,7 @@ var global_id=1
 var Node = function(id, pid, info) {
 	this.id = id
 	this.pid = pid
-	this.info = info
-	//console.log('NODE CLASS: ',info[0][0])
-	//console.log('SETENDO NOODO', info)
-
-	this.getId = function () {
-		return this.id
-	}
-
-	this.getPid = function () {
-		return this.pid
-	}
-
-	this.getInfo = function () {
-		return this.info
-	}
+	this.info = Array.clone(info)
 }
 
 function isValid(x1, y1, x, y) {
@@ -1143,9 +1131,9 @@ var final_state = [
 
 var global_turn = 1
 
-var open = []
-var close = []
 function breadth(initial) {
+var close = []
+var open = []
 	var
 		actual,
 		nodes = [],
@@ -1156,31 +1144,34 @@ function breadth(initial) {
 	//console.log('HOLAAAAA: ',initial.getInfo()[0][0])
 	while(open.length) {
 
-		// expand node
-		actual = open.shift()
-		console.log(actual)
-		//close.push(actual)
 
+		actual = open.shift()
+		close.push(actual)
+
+		if(areEqual2(actual.info,final_state)) {
+			console.log('FIN :)')
+			break
+		}
+
+		//console.log(actual.pid)
+
+		//console.log('CLOSE: ',close)
 		//console.log('NODES ',actual)
 
-		nodes = get_nodes(actual)
-		if(isEnd(nodes)) {
-			console.log('FIN :)')
-			return
-			
-		}
-		console.log(open.length)
-		open = open.concat(nodes)
-		console.log(open.length)
-		for(i=0;i<open.length; i++)
-			res+=printMat(open[i].getInfo())+'('+open[i].getId()+':'+open[i].getPid()+')\n'
+		//nodes = 
+		//console.log(open.length)
+		//open = open.concat(nodes)
+		//console.log(open.length)
+		/*for(i=0;i<open.length; i++)
+			res+=printMat(open[i].getInfo())+'('+open[i].getId()+':'+open[i].getPid()+')\n'*/
 
-			
-		console.log(res)
+		open.append(get_nodes(actual))
+		//console.log(res)
 		//console.log(nodes)
 
 	}
-
+	//console.log(close)
+	//console.log(close)
 	console.log(':(')
 
 	//console.log('HOLAAAAA: ',initial.getInfo()[0][0])
@@ -1189,7 +1180,7 @@ function breadth(initial) {
 function get_nodes(node_lalaa) {
 	var tmp = []
 	//console.log(node_lalaa)
-	var node_actual = node_lalaa.getInfo()
+	var node_actual = Array.clone(node_lalaa.info)
 	
 	//console.log(22222,node[0][0])
 		/*for(var i=0; i<node.length; i++) {
@@ -1233,25 +1224,25 @@ function get_nodes(node_lalaa) {
 
 				// Solo recorre para los 6 caballos
 				// siempre se ejcuta 3 veces
-				if(node_actual[i][j] == global_turn) {
+				//if(node_actual[i][j] == global_turn) {
 					//console.log('HOLA')
 					for (var x=0; x<mW; x++) {
 						for (var y=0; y<mH; y++) {
 							if((i != x || j != y) && isValid(i, j, x, y)) {
-								var tmp2 = mslice(node_actual)
+								var tmp2 = Array.clone(node_actual)
 								tmp2[i][j] = 0
 								tmp2[x][y] = global_turn
 								if(isValidNode(tmp2)){
-									console.log(node_lalaa)
+									//console.log(node_lalaa)
 									global_id += 1
-									tmp.push(new Node(global_id, node_lalaa.getId(), tmp2))
+									tmp.push(new Node(global_id, node_lalaa.id, tmp2))
 								}
 								//tmp2 = null
 							}
 						}	
 					}
 
-				}
+				//}
 
 			}
 		}
@@ -1268,19 +1259,19 @@ attemptMovePiece()*/
 
 function isValidNode(node) {
 	var i=0
-	for(;i<close.length;i++)
-		if(areEqual(close[i].getInfo(),node))
-			return false
+	/*for(;i<close.length;i++)
+		if(areEqual2(close[i].getInfo(),node))
+			return false*/
 	return true
 }
 
-function mslice(matrix){
+/*function mslice(matrix){
 	var i=0, temp = []
 	for(;i<matrix.length; i++){
 		temp.push(matrix[i].slice())
 	}
 	return temp
-}
+}*/
 
 function areEqual(matrix1, matrix2) {
 	var i=0, j=0
@@ -1289,14 +1280,6 @@ function areEqual(matrix1, matrix2) {
 			if(!!(matrix1[i][j]) != !!(matrix2[i][j]))
 				return false
 	return true
-}
-
-function isEnd(nodes) {
-	var i=0
-		for(;i<nodes.length; i++)
-			if(areEqual2(nodes[i].getInfo(),final_state))
-				return true
-		return false
 }
 
 function areEqual2(matrix1, matrix2) {
