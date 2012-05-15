@@ -1062,16 +1062,14 @@ Canvas3D.addEvent(window, "load", function() {
 
 		//breadth(aPieces)
 
-		var initial = new Node(
-			global_id,
-			0,
-			[
+		var initial_state = [
 				[1,1,1],
 				[0,0,0],
 				[0,0,0],
 				[-1,-1,-1]
 			]
-		)
+
+		var initial = new Node(global_id,0,initial_state)
 		/*var test2 = new Node(2,1,['hola2'])
 		console.log(test)
 		console.log(test2)
@@ -1090,10 +1088,11 @@ Canvas3D.addEvent(window, "load", function() {
 
 var global_id=1
 
-Node = function(id, pid, info) {
+var Node = function(id, pid, info) {
 	this.id = id
 	this.pid = pid
 	this.info = info
+	//console.log('NODE CLASS: ',info[0][0])
 	//console.log('SETENDO NOODO', info)
 
 	this.getId = function () {
@@ -1134,39 +1133,65 @@ function isValid(x1, y1, x, y) {
 }
 
 
-var global_turn = true
+
+var final_state = [
+	[-1,-1,-1],
+	[0,0,0],
+	[0,0,0],
+	[1,1,1]
+]
+
+var global_turn = 1
+
+var open = []
+var close = []
 function breadth(initial) {
 	var
 		actual,
 		nodes = [],
-		open = [],
-		close = []
+		i, res =''
 
 	open.push(initial)
-	console.log(initial)
 
+	//console.log('HOLAAAAA: ',initial.getInfo()[0][0])
 	while(open.length) {
 
 		// expand node
-		actual = open.pop(initial)
+		actual = open.shift()
+		console.log(actual)
 		//close.push(actual)
 
 		//console.log('NODES ',actual)
 
-		nodes = get_nodes(actual.getInfo())
-		//if(nodes) open.push(nodes)
-		console.log(nodes)
+		nodes = get_nodes(actual)
+		if(isEnd(nodes)) {
+			console.log('FIN :)')
+			return
+			
+		}
+		console.log(open.length)
+		open = open.concat(nodes)
+		console.log(open.length)
+		for(i=0;i<open.length; i++)
+			res+=printMat(open[i].getInfo())+'('+open[i].getId()+':'+open[i].getPid()+')\n'
+
+			
+		console.log(res)
+		//console.log(nodes)
 
 	}
 
+	console.log(':(')
+
+	//console.log('HOLAAAAA: ',initial.getInfo()[0][0])
 }
 
-flag = true
-
-
-function get_nodes(node) {
+function get_nodes(node_lalaa) {
 	var tmp = []
-	console.log(node)
+	//console.log(node_lalaa)
+	var node_actual = node_lalaa.getInfo()
+	
+	//console.log(22222,node[0][0])
 		/*for(var i=0; i<node.length; i++) {
 			row = node[i]
 			for(var j=0; j<row.length; j++) {
@@ -1208,16 +1233,19 @@ function get_nodes(node) {
 
 				// Solo recorre para los 6 caballos
 				// siempre se ejcuta 3 veces
-				if(node[i][j] == global_turn) {
+				if(node_actual[i][j] == global_turn) {
 					//console.log('HOLA')
 					for (var x=0; x<mW; x++) {
 						for (var y=0; y<mH; y++) {
 							if((i != x || j != y) && isValid(i, j, x, y)) {
-								var tmp2 = node
+								var tmp2 = mslice(node_actual)
 								tmp2[i][j] = 0
-								//tmp2[x][y] = global_turn
-								console.log(tmp2)
-								tmp.push(tmp2)
+								tmp2[x][y] = global_turn
+								if(isValidNode(tmp2)){
+									console.log(node_lalaa)
+									global_id += 1
+									tmp.push(new Node(global_id, node_lalaa.getId(), tmp2))
+								}
 								//tmp2 = null
 							}
 						}	
@@ -1227,10 +1255,10 @@ function get_nodes(node) {
 
 			}
 		}
-
-		if(flag) global_turn += 1
+		global_turn *= -1
+		/*if(flag) global_turn += 1
 		else global_turn -= 1
-		flag = !flag
+		flag = !flag*/
 		return tmp
 }
 
@@ -1238,8 +1266,56 @@ function get_nodes(node) {
 iSelectorY = 0
 attemptMovePiece()*/
 
+function isValidNode(node) {
+	var i=0
+	for(;i<close.length;i++)
+		if(areEqual(close[i].getInfo(),node))
+			return false
+	return true
+}
 
+function mslice(matrix){
+	var i=0, temp = []
+	for(;i<matrix.length; i++){
+		temp.push(matrix[i].slice())
+	}
+	return temp
+}
 
+function areEqual(matrix1, matrix2) {
+	var i=0, j=0
+	for(;i<matrix1.length; i++)
+		for(;j<matrix1[i].length; j++)
+			if(!!(matrix1[i][j]) != !!(matrix2[i][j]))
+				return false
+	return true
+}
+
+function isEnd(nodes) {
+	var i=0
+		for(;i<nodes.length; i++)
+			if(areEqual2(nodes[i].getInfo(),final_state))
+				return true
+		return false
+}
+
+function areEqual2(matrix1, matrix2) {
+	var i=0, j=0
+	for(;i<matrix1.length; i++)
+		for(;j<matrix1[i].length; j++)
+			if(matrix1[i][j] != matrix2[i][j])
+				return false
+	return true
+}
+
+function printMat(arr){
+	var i, j, res = '';
+	for(j=0; j<arr.length;j++){
+		for(i=0;i<arr[j].length;i++){res  += arr[j][i]+','}
+		res += '|' 
+	}
+ 	return ('['+res+']');
+}
 
 })();
 
