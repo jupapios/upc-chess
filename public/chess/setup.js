@@ -14,7 +14,7 @@ var oScene;
 var aPieces = [];
 
 
-var mW=4;
+var mW=3;
 var mH=3;
 
 
@@ -1063,20 +1063,17 @@ Canvas3D.addEvent(window, "load", function() {
 		//breadth(aPieces)
 
 		var initial_state = [
-				[1,1,1],
+				[1,0,1],
 				[0,0,0],
-				[0,0,0],
-				[-1,-1,-1]
+				[-1,0,-1]
 			]
 
-		var initial = new Node(global_id,0,initial_state)
+		var initial = new Node(global_id,0,initial_state,1)
 		/*var test2 = new Node(2,1,['hola2'])
 		console.log(test)
 		console.log(test2)
 		*/
-		setTimeout(function() {
-			breadth(initial)
-		})
+		breadth(initial)
 
 
 
@@ -1090,10 +1087,11 @@ Canvas3D.addEvent(window, "load", function() {
 
 var global_id=1
 
-var Node = function(id, pid, info) {
+var Node = function(id, pid, info, turn) {
 	this.id = id
 	this.pid = pid
-	this.info = Array.clone(info)
+	this.info = Array.clone(info),
+	this.turn = turn
 }
 
 function isValid(x1, y1, x, y) {
@@ -1107,15 +1105,7 @@ function isValid(x1, y1, x, y) {
 			(x1 == x-1 && y1 == y-2) ||
 			(x1 == x-1 && y1 == y+2)
 		) {
-			var oTargetPiece;
-			if (oTargetPiece = squareHasPiece(x1, y1)) {
-				/*if (oTargetPiece.color != oPiece.color) {
-					return true;
-				}*/
-				return true;
-			} else {
-				return false;
-			}
+			return true
 		}
 		return false;
 }
@@ -1123,32 +1113,33 @@ function isValid(x1, y1, x, y) {
 
 
 var final_state = [
-	[-1,-1,-1],
+	[-1,0,-1],
 	[0,0,0],
-	[0,0,0],
-	[1,1,1]
+	[1,0,1]
 ]
-
-var global_turn = 1
 
 function breadth(initial) {
 var close = []
 var open = []
 	var
-		actual,
+		actual = [],
 		nodes = [],
-		i, res =''
+		i, res ='', res2='', k=0
 
 	open.push(initial)
+	//console.log(open+"")
 
 	//console.log('HOLAAAAA: ',initial.getInfo()[0][0])
-	while(open.length) {
+	while(open.length > 0 && k<10000) {
+		k++
 
-
+		//global_turn*=-1
 		actual = open.shift()
+		//console.log(actual)
 		close.push(actual)
 
-		if(areEqual2(actual.info,final_state)) {
+		//console.log(close+"")
+		if(areEqual(actual.info,final_state)) {
 			console.log('FIN :)')
 			break
 		}
@@ -1158,29 +1149,77 @@ var open = []
 		//console.log('CLOSE: ',close)
 		//console.log('NODES ',actual)
 
-		//nodes = 
+		nodes = get_nodes(close,actual)
 		//console.log(open.length)
 		//open = open.concat(nodes)
 		//console.log(open.length)
-		/*for(i=0;i<open.length; i++)
-			res+=printMat(open[i].getInfo())+'('+open[i].getId()+':'+open[i].getPid()+')\n'*/
+		//for(i=0;i<open.length; i++)
+		//	res+=printMat(open[i].info)
 
-		open.append(get_nodes(actual))
-		//console.log(res)
+		//for(i=0;i<nodes.length; i++)
+		//	res2+=printMat(nodes[i].info)		
+
+		//console.log('OPEN:'+open)
+		open.append(nodes)
+		//console.log(open.length)
+		//console.log('ACTUAL:',actual,'NODES:',nodes)
 		//console.log(nodes)
-
+		//console.log(open.length, open, close)
 	}
+
+	/*console.log(close)
+		var initial_state = [
+				[1,0,1],
+				[0,0,0],
+				[-1,0,-1]
+			]	
+	var lala = isValidNode(close,initial_state)
+	console.log(lala)*/
 	//console.log(close)
 	//console.log(close)
-	console.log(':(')
+	//console.log('nodes',nodes)
+	console.log(':(', close.length)
 
 	//console.log('HOLAAAAA: ',initial.getInfo()[0][0])
 }
 
-function get_nodes(node_lalaa) {
-	var tmp = []
-	//console.log(node_lalaa)
-	var node_actual = Array.clone(node_lalaa.info)
+function get_nodes(close,node_in) {
+	var 
+		i,
+		j,
+		x,
+		y,
+		child = null,
+		list_node = [],
+		node_actual = Array.clone(node_in.info)
+	//console.log(global_turn)
+
+	for(i=0;i<node_actual.length; i++) {
+		for(j=0;j<node_actual[i].length; j++) {
+			if(node_actual[i][j] === node_in.turn) {
+						//console.log('ij(',i,j,') xy(',x,y,')')
+				for (x=0; x<mW; x++) {
+					for (y=0; y<mH; y++) {
+						//console.log(i,j, x, y)
+						if(isValid(i, j, x, y) && Math.abs(node_actual[x][y]) !== 1 ) {
+							child = Array.clone(node_actual)
+							//child = mslice(node_actual)
+							child[x][y] = node_in.turn
+							child[i][j] = 0
+							if(isValidNode(close,child)){
+								global_id += 1
+								list_node.push(new Node(global_id, node_in.id, child, node_in.turn*-1))
+							} else {
+								child = []
+							}						
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//console.log(list_node)
 	
 	//console.log(22222,node[0][0])
 		/*for(var i=0; i<node.length; i++) {
@@ -1216,7 +1255,7 @@ function get_nodes(node_lalaa) {
 		//4x3
 
 		//Se ejecuta 4 veces
-		for(var i=0; i<mW; i++) {
+		/*for(var i=0; i<mW; i++) {
 			//console.log(node[i])
 
 			//Se ejecuta 3 veces
@@ -1224,7 +1263,7 @@ function get_nodes(node_lalaa) {
 
 				// Solo recorre para los 6 caballos
 				// siempre se ejcuta 3 veces
-				//if(node_actual[i][j] == global_turn) {
+				if(node_actual[i][j] == global_turn) {
 					//console.log('HOLA')
 					for (var x=0; x<mW; x++) {
 						for (var y=0; y<mH; y++) {
@@ -1242,52 +1281,54 @@ function get_nodes(node_lalaa) {
 						}	
 					}
 
-				//}
+				}
 
 			}
-		}
-		global_turn *= -1
+		}*/
 		/*if(flag) global_turn += 1
 		else global_turn -= 1
 		flag = !flag*/
-		return tmp
+		return list_node
 }
 
 /*iSelectorX = 1
 iSelectorY = 0
 attemptMovePiece()*/
 
-function isValidNode(node) {
-	var i=0
-	/*for(;i<close.length;i++)
-		if(areEqual2(close[i].getInfo(),node))
-			return false*/
+function isValidNode(close,node_to) {
+	//console.log('ENVALIDADOD',close)
+	for(var z=0;z<close.length;z++) { 
+		if(areEqual(close[z].info,node_to))
+			return false
+	}
 	return true
 }
 
-/*function mslice(matrix){
-	var i=0, temp = []
-	for(;i<matrix.length; i++){
-		temp.push(matrix[i].slice())
+function mslice(matrix){
+	var temp = []
+	for(var i=0;i<matrix.length; i++){
+		temp.push(Array.clone(matrix[i]))
 	}
 	return temp
-}*/
+}
 
-function areEqual(matrix1, matrix2) {
+/*function areEqual_old(matrix1, matrix2) {
 	var i=0, j=0
 	for(;i<matrix1.length; i++)
 		for(;j<matrix1[i].length; j++)
 			if(!!(matrix1[i][j]) != !!(matrix2[i][j]))
 				return false
 	return true
-}
+}*/
 
-function areEqual2(matrix1, matrix2) {
-	var i=0, j=0
-	for(;i<matrix1.length; i++)
-		for(;j<matrix1[i].length; j++)
-			if(matrix1[i][j] != matrix2[i][j])
+function areEqual(matrix1, matrix2) {
+	for(var pp=0;pp<matrix1.length; pp++) {
+		for(var qq=0;qq<matrix1[pp].length; qq++) {
+			if(matrix1[pp][qq] !== matrix2[pp][qq]) {
 				return false
+			}
+		}
+	}
 	return true
 }
 
